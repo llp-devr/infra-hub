@@ -1,0 +1,42 @@
+---
+- name: Harden SSH and manage access
+  hosts: all
+  become: true
+
+  vars:
+    remote_users:
+      - ansible
+
+  tasks:
+
+    - name: Ensure "remote" group exists
+      group:
+        name: remote
+        state: present
+
+    - name: Add users to "remote" group
+      user:
+        name: "{{ item }}"
+        groups: remote
+        append: yes
+      loop: "{{ remote_users }}"
+
+    - name: Deploy hardened sshd_config
+      copy:
+        src: files/sshd_config
+        dest: /etc/ssh/sshd_config
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+
+    - name: Validate new sshd_config before restarting
+      command: sshd -t
+      register: sshd_check
+      failed_when: sshd_check.rc != 0
+
+    - name: Restart sshd safely
+      service:
+        name: ssh
+        state: restarted
+      when: sshd_check.rc == 0

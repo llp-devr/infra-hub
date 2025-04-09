@@ -1,0 +1,65 @@
+#####################
+### Basic Options ###
+#####################
+Port 22
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+######################
+### Login Controls ###
+######################
+LoginGraceTime 30
+PermitRootLogin no
+MaxAuthTries 3
+MaxSessions 3
+
+######################
+### Authentication ###
+######################
+AuthenticationMethods publickey
+PubkeyAuthentication yes
+HostbasedAuthentication no
+PasswordAuthentication no
+PermitEmptyPasswords no
+KbdInteractiveAuthentication no
+ChallengeResponseAuthentication no
+
+###########################
+### PAM and Environment ###
+###########################
+UsePAM yes
+AcceptEnv LANG LC_*
+
+############################
+### Forwarding and Agent ###
+############################
+AllowAgentForwarding no
+AllowTcpForwarding no
+GatewayPorts no
+X11Forwarding no
+
+########################
+### Logging and MOTD ###
+########################
+PrintMotd no
+Banner none
+SyslogFacility AUTH
+LogLevel VERBOSE
+
+##################
+### Subsystems ###
+##################
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+######################
+### Access Control ###
+######################
+AllowGroups remote
+
+############################
+### Additional Hardening ###
+############################
+UseDNS no
+Compression no
+IgnoreRhosts yes
+PermitUserEnvironment no

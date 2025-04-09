@@ -1,0 +1,2 @@
+k8s/*.config filter=git-crypt diff=git-crypt
+

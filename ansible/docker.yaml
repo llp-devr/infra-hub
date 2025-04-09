@@ -1,0 +1,23 @@
+---
+- name: Install Docker
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure required dependencies are installed
+      apt:
+        name:
+          - containerd
+          - curl
+          - ca-certificates
+          - docker.io
+          - docker-compose-v2
+          - lsb-release
+        state: latest
+        update_cache: yes
+
+    - name: Enable and start containerd
+      systemd:
+        name: containerd
+        enabled: true
+        state: started

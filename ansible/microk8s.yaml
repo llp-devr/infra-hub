@@ -1,0 +1,30 @@
+- name: MicroK8s
+  hosts: servers 
+  become: true
+  tasks:
+    - name: Install snapd
+      apt:
+        name: snapd
+        state: latest 
+
+    - name: Install MicroK8s
+      snap:
+        name: microk8s
+        classic: yes
+        state: present
+
+    - name: Add user to microk8s group
+      user:
+        name: "{{ ansible_user }}"
+        groups: microk8s
+        append: yes
+
+    - name: Enable MicroK8s addons
+      shell: |
+        microk8s enable dns ingress
+      args:
+        creates: /var/snap/microk8s/common/addons/ingress
+
+    - name: Wait for MicroK8s to be ready
+      shell: microk8s status --wait-ready
+

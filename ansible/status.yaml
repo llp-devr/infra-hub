@@ -1,0 +1,55 @@
+---
+- name: Gather system status from server
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+
+    - name: Show uptime
+      command: uptime
+      register: uptime_output
+
+    - name: Display uptime
+      debug:
+        msg: "{{ uptime_output.stdout }}"
+
+    - name: Show disk usage
+      command: df -h
+      register: disk_usage
+
+    - name: Display disk usage
+      debug:
+        msg: "{{ disk_usage.stdout_lines }}"
+
+    - name: Show memory usage
+      command: free -h
+      register: memory_usage
+
+    - name: Display memory usage
+      debug:
+        msg: "{{ memory_usage.stdout_lines }}"
+
+    - name: Show load average
+      shell: cat /proc/loadavg
+      register: loadavg
+
+    - name: Display load average
+      debug:
+        msg: "Load average: {{ loadavg.stdout }}"
+
+    - name: List running processes (top 5 by memory usage)
+      shell: ps aux --sort=-%mem | head -n 6
+      register: top_processes
+
+    - name: Display top memory processes
+      debug:
+        msg: "{{ top_processes.stdout_lines }}"
+
+    - name: Show network interfaces
+      command: ip a
+      register: ip_addr
+
+    - name: Display IP addresses
+      debug:
+        msg: "{{ ip_addr.stdout_lines }}"
